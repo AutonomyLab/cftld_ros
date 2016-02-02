@@ -1,0 +1,5 @@
+<library path="lib/libcftld_nodelet_class">
+  <class name="cftld_ros/CFtldRosNodelet" type="cftld_ros::CFtldRosNodelet" base_class_type="nodelet::Nodelet">
+    <description>Nodelet implementation of CFtld Tracker in ROS</description>
+  </class>
+</library>
