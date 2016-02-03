@@ -19,7 +19,12 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
 )
 
-find_package(OpenCV REQUIRED PATHS ${CUSTOM_OPENCV_DIR} NO_DEFAULT_PATH)
+# Forcing the custom version of OpenCV
+find_package(OpenCV 3 REQUIRED PATHS ${CUSTOM_OPENCV_DIR} NO_DEFAULT_PATH)
+message(STATUS "OpenCV Includes: ${OpenCV_INCLUDE_DIRS}")
+message(STATUS "OpenCV Libraries: ${OpenCV_LIBRARIES}")
+message(STATUS "OpenCV Libs: ${OpenCV_LIBS}")
+message(STATUS "OpenCV Lib dir: ${OpenCV_LIB_DIR}")
 
 # catkin_python_setup()
 
@@ -60,9 +65,43 @@ catkin_package(
 ## Build ##
 ###########
 
+include(ExternalProject)
+ExternalProject_Add(CFtld
+  #GIT_REPOSITORY https://github.com/AutonomyLab/CFtld.git
+  #GIT_TAG master
+  URL https://github.com/AutonomyLab/CFtld/archive/master.zip
+  PREFIX ${CATKIN_DEVEL_PREFIX}
+  CMAKE_ARGS
+    -DWITH_TESTS=0
+    -DCMAKE_PREFIX_PATH=${CUSTOM_OPENCV_DIR}
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo
+    #-DEXTERNAL_DEVEL_SPACE=${CATKIN_DEVEL_PREFIX}
+    -DCMAKE_INSTALL_PREFIX=${CATKIN_DEVEL_PREFIX}
+  BUILD_COMMAND make -j4
+  # INSTALL_COMMAND make install
+  BUILD_IN_SOURCE 1
+)
+
+set(CFTLD_PATH "${CATKIN_DEVEL_PREFIX}/src/CFtld")
+
+# The underlying source dependency (CFtld) is badly packaged
+# and does not provide an easy way to be used as a library.
+# I have to manually add include directories to avoid patches.
 include_directories(
   include
+  ${CFTLD_PATH}/src/opentld
+  ${CFTLD_PATH}/src/libopentld
+  ${CFTLD_PATH}/src/libopentld/imacq
+  ${CFTLD_PATH}/src/libopentld/tld
+  ${CFTLD_PATH}/src/3rdparty/cf_tracking/src/cf_libs/common
+  ${CFTLD_PATH}/src/3rdparty/libconfig
+  ${OpenCV_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${CFTLD_PATH}/lib
+#  ${OpenCV_LIB_DIR}
 )
 
 ## Declare a C++ library
@@ -70,15 +109,18 @@ add_library(cftld_nodelet_class
   src/cftld_nodelet_class.cpp
 )
 
-add_dependencies(cftld_nodelet_class ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(cftld_nodelet_class ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} CFtld)
 
 target_link_libraries(cftld_nodelet_class
+  opentld
+  config++
+  main
+  ${OpenCV_LIBRARIES}
   ${catkin_LIBRARIES}
 )
 
 ## Declare a C++ executable
 add_executable(cftld_ros_node src/cftld_ros_node.cpp)
-
 
 add_dependencies(cftld_ros_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 

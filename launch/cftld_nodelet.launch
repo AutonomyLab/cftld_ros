@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- nodelet manager -->
+  <node pkg="nodelet" type="nodelet" name="cftld_nodelet_manager" args="manager" output="screen"/>
+  <node name="republisher" type="republish" pkg="image_transport"
+    args="compressed in:=bebop/image_raw raw out:=bebop/image_raw" />
+  <node pkg="nodelet" type="nodelet" name="cftld_nodelet"
+    args="load cftld_ros/CFtldRosNodelet cftld_nodelet_manager" >
+    <remap from="image_raw" to="bebop/image_raw" />
+    <remap from="init_roi" to="rqt_image_view/clicked_roi" />
+    <!--param name="image_transport" value="compressed" /-->
+    <param name="enable_debug_image" value="true" />
+    <param name="tld_config_file" value="" />
+    <param name="downsample_factor" value="1.0" />
+  </node>
+</launch>
