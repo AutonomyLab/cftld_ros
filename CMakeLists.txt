@@ -5,7 +5,7 @@ project(cftld_ros)
 # catkin workspace's setup file sets the latter, so messing with
 # the former will break catkin
 
-set(CUSTOM_OPENCV_DIR "/local_home/opencv/opencv-3.0.0/install")
+set(CUSTOM_OPENCV_DIR "/home/autolab/opencv/opencv-3.1.0/install")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
 
@@ -28,12 +28,11 @@ message(STATUS "OpenCV Lib dir: ${OpenCV_LIB_DIR}")
 
 # catkin_python_setup()
 
-# Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+#Generate messages in the 'msg' folder
+add_message_files(
+  FILES
+  Track.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -42,11 +41,11 @@ message(STATUS "OpenCV Lib dir: ${OpenCV_LIB_DIR}")
 #   Service2.srv
 # )
 
-## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   sensor_msgs#   std_msgs
-# )
+# Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+  sensor_msgs std_msgs
+)
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
 # generate_dynamic_reconfigure_options(
@@ -57,7 +56,7 @@ message(STATUS "OpenCV Lib dir: ${OpenCV_LIB_DIR}")
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES cftld_ros
-   CATKIN_DEPENDS sensor_msgs std_msgs
+   CATKIN_DEPENDS sensor_msgs std_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -105,11 +104,20 @@ link_directories(
 )
 
 ## Declare a C++ library
+add_library(cftld_benchmarker
+  src/benchmarker.cpp
+)
+
 add_library(cftld_nodelet_class
   src/cftld_nodelet_class.cpp
 )
 
-add_dependencies(cftld_nodelet_class ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} CFtld)
+add_dependencies(cftld_nodelet_class
+    ${PROJECT_NAME}_generate_messages_cpp
+    ${${PROJECT_NAME}_EXPORTED_TARGETS}
+    ${catkin_EXPORTED_TARGETS}
+    CFtld
+)
 
 target_link_libraries(cftld_nodelet_class
   opentld
@@ -117,6 +125,7 @@ target_link_libraries(cftld_nodelet_class
   main
   ${OpenCV_LIBRARIES}
   ${catkin_LIBRARIES}
+  cftld_benchmarker
 )
 
 ## Declare a C++ executable

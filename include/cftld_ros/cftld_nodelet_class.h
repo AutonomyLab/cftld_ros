@@ -10,6 +10,7 @@
 #include <sensor_msgs/RegionOfInterest.h>
 #include <cv_bridge/cv_bridge.h>
 #include <std_msgs/Empty.h>
+#include <cftld_ros/Track.h>
 
 // cv
 #include <opencv2/core/core.hpp>
@@ -34,12 +35,21 @@ enum tracking_state_t
   TRACKING_STATE_NUM
 };
 
+
+// The nodelet version of ROS_* macros complains about getName() not available
 template<class T>
 static void GetParam(const ros::NodeHandle& nh,
                      const std::string& param_name, T& var, const T& default_value)
 {
   nh.param<T>(param_name, var, default_value);
   ROS_INFO_STREAM("[CFTLD] Param " << param_name << " : " << var);
+}
+
+template<class T>
+static void SetTLDParam(const std::string& caption, T& lhs, const T& rhs)
+{
+  ROS_INFO_STREAM("[CFTLD] Setting " << caption << " : " << rhs);
+  lhs = rhs;
 }
 
 class CFtldRosNodelet : public nodelet::Nodelet
@@ -68,7 +78,7 @@ protected:
   ros::Publisher pub_track_;
 
   // params
-  std::string param_cfg_file_;
+  std::string param_tld_cfgfile_;
   double param_downsample_factor_;
 
   bool do_downsample_;
@@ -82,12 +92,9 @@ protected:
   libconfig::Config tld_cfg_;
   tld::Settings tld_settings_;
   std::shared_ptr<tld::TLD> tld_ptr_;
-  std::shared_ptr<tld::Trajectory> trajectory_ptr_;
-  bool param_show_output_;
-  double param_tld_threshold_;
-  int32_t pram_tld_seed_;
 
-  uint32_t track_id_;
+  // Internal
+  uint32_t track_id_;  // 0: Unknown (default)
 
 }; // class CFtldRosNodelet
 }  // namespace cftld_ros

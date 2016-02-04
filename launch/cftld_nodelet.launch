@@ -10,7 +10,7 @@
     <remap from="init_roi" to="rqt_image_view/clicked_roi" />
     <!--param name="image_transport" value="compressed" /-->
     <param name="enable_debug_image" value="true" />
-    <param name="tld_config_file" value="" />
+    <param name="tld_config_file" value="$(find cftld_ros)/config/cftld.cfg" />
     <param name="downsample_factor" value="1.0" />
   </node>
 </launch>
