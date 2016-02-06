@@ -170,9 +170,9 @@ void CFtldRosNodelet::InitROICallback(const sensor_msgs::RegionOfInterestConstPt
   cv::Rect bb(roi_msg_ptr->x_offset, roi_msg_ptr->y_offset,
               roi_msg_ptr->width, roi_msg_ptr->height);
 
-  if (bb.area() == 0)
+  if (bb.area() < 10)
   {
-    NODELET_ERROR("[CFTLD] The input rect's area is 0");
+    NODELET_ERROR("[CFTLD] The input rect's area is less than 10");
     return;
   }
 

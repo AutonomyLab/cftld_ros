@@ -1,16 +1,33 @@
 <?xml version="1.0"?>
 <launch>
+  <arg name="output" default="screen"/>
+
+  <arg name="spawn_nodelet_manager" default="true" />
+  <arg name="nodelet_manager" default="nodelet_manager" />
+
+  <!-- param file is all ros related params -->
+  <!-- cfg file configures TLD -->
+  <arg name="cftld_param_file" default="$(find cftld_ros)/config/default.yaml" />
+  <arg name="cftld_config_file" default="$(find cftld_ros)/config/cftld.cfg" />
+
   <!-- nodelet manager -->
-  <node pkg="nodelet" type="nodelet" name="cftld_nodelet_manager" args="manager" output="screen"/>
+  <group if="$(arg spawn_nodelet_manager)">
+    <node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager)" args="manager" output="$(arg output)"/>
+  </group>
+
+  <!-- temp -->
   <node name="republisher" type="republish" pkg="image_transport"
-    args="compressed in:=bebop/image_raw raw out:=bebop/image_raw" />
+    args="compressed in:=bebop/image_raw raw out:=bebop/image_raw" output="$(arg output)" />
+
   <node pkg="nodelet" type="nodelet" name="cftld_nodelet"
-    args="load cftld_ros/CFtldRosNodelet cftld_nodelet_manager" >
+    args="load cftld_ros/CFtldRosNodelet $(arg nodelet_manager)" output="$(arg output)">
     <remap from="image_raw" to="bebop/image_raw" />
-    <remap from="init_roi" to="rqt_image_view/clicked_roi" />
-    <!--param name="image_transport" value="compressed" /-->
-    <param name="enable_debug_image" value="true" />
-    <param name="tld_config_file" value="$(find cftld_ros)/config/cftld.cfg" />
-    <param name="downsample_factor" value="1.0" />
+    <remap from="init_roi" to="cftld/init_roi" />
+    <remap from="reset" to="cftld/reset" />
+    <remap from="track" to="cftld/track" />
+    <remap from="debug_image" to="cftld/debug_image" />
+
+    <param name="tld_config_file" value="$(arg cftld_config_file)" />
+    <rosparam command="load" file="$(arg cftld_param_file)" />
   </node>
 </launch>
