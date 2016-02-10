@@ -1,3 +1,6 @@
+#ifndef CFTLD_NODELET_CLASS
+#define CFTLD_NODELET_CLASS
+
 // c++
 #include <memory>
 #include <string>
@@ -98,3 +101,5 @@ protected:
 
 }; // class CFtldRosNodelet
 }  // namespace cftld_ros
+
+#endif
