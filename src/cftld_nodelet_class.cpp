@@ -222,13 +222,6 @@ void CFtldRosNodelet::ImageCallback(const sensor_msgs::ImageConstPtr &img_msg_pt
       TICK("[CFTLD] Convert to BGR");
     }
 
-    NODELET_INFO_STREAM("TLD Tracking Valid: " << tld_ptr_->isTrackerValid);
-    NODELET_INFO_STREAM("TLD Tracking Confidence: " << tld_ptr_->currConf);
-    NODELET_INFO_STREAM("TLD Tracking Enabled: " << tld_ptr_->trackerEnabled);
-    NODELET_INFO_STREAM("TLD Learning Enabled: " << tld_ptr_->learningEnabled);
-    NODELET_INFO_STREAM("TLD Detection Enabled: " << tld_ptr_->detectorEnabled);
-    NODELET_INFO_STREAM("TLD Valid BB: " << (tld_ptr_->currBB != NULL));
-
     cftld_ros::TrackPtr track_msg_ptr(new cftld_ros::Track);
     track_msg_ptr->header = img_msg_ptr->header;
     track_msg_ptr->status = cftld_ros::Track::STATUS_UNKNOWN;
@@ -241,11 +234,18 @@ void CFtldRosNodelet::ImageCallback(const sensor_msgs::ImageConstPtr &img_msg_pt
 
     if (tracking_state_ == TRACKING_STATE_UNINITED)
     {
-      NODELET_INFO("[CFTLD] The tracker has not yet been initialized.");
+      NODELET_INFO_THROTTLE(1, "[CFTLD] The tracker has not yet been initialized.");
       track_msg_ptr->status = cftld_ros::Track::STATUS_UNKNOWN;
     }
     else
     {
+      NODELET_INFO_STREAM_THROTTLE(1, "TLD Tracking Valid: " << tld_ptr_->isTrackerValid);
+      NODELET_INFO_STREAM_THROTTLE(1, "TLD Tracking Confidence: " << tld_ptr_->currConf);
+      NODELET_INFO_STREAM_THROTTLE(1, "TLD Tracking Enabled: " << tld_ptr_->trackerEnabled);
+      NODELET_INFO_STREAM_THROTTLE(1, "TLD Learning Enabled: " << tld_ptr_->learningEnabled);
+      NODELET_INFO_STREAM_THROTTLE(1, "TLD Detection Enabled: " << tld_ptr_->detectorEnabled);
+      NODELET_INFO_STREAM_THROTTLE(1, "TLD Valid BB: " << (tld_ptr_->currBB != NULL));
+
       tld_ptr_->processImage(frame_input_);
       TICK("[CFTLD] TLD processImage");
       if (tld_ptr_->currBB && tld_ptr_->isTrackerValid)
@@ -258,7 +258,7 @@ void CFtldRosNodelet::ImageCallback(const sensor_msgs::ImageConstPtr &img_msg_pt
         track_msg_ptr->roi.height = bb.height;
         track_msg_ptr->uid = track_id_;
         track_msg_ptr->confidence = tld_ptr_->currConf;
-        NODELET_INFO_STREAM("[CFTLD] Tracking: " << bb);
+        NODELET_DEBUG_STREAM("[CFTLD] Tracking: " << bb);
       }
       else
       {
@@ -292,7 +292,7 @@ void CFtldRosNodelet::ImageCallback(const sensor_msgs::ImageConstPtr &img_msg_pt
       TICK("[CFTLD] Debug Image");
     }
 
-    NODELET_INFO_STREAM("Benchmark:\n" << util::StepBenchmarker::GetInstance().getstr());
+    NODELET_DEBUG_STREAM("Benchmark:\n" << util::StepBenchmarker::GetInstance().getstr());
   }
   catch (const cv_bridge::Exception& e)
   {

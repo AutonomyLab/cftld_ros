@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="output" default="screen"/>
+
+  <!-- param file is all ros related params -->
+  <!-- cfg file configures TLD -->
+  <arg name="cftld_param_file" default="$(find cftld_ros)/config/default.yaml" />
+  <arg name="cftld_config_file" default="$(find cftld_ros)/config/cftld.cfg" />
+
+  <!-- temp -->
+  <!--node name="republisher" type="republish" pkg="image_transport"
+    args="compressed in:=bebop/image_raw raw out:=bebop/image_raw" output="$(arg output)" /-->
+
+  <node pkg="cftld_ros" type="cftld_ros_node" name="cftld_ros" output="$(arg output)">
+    <remap from="image_raw" to="bebop/image_raw" />
+    <remap from="init_roi" to="cftld/init_roi" />
+    <remap from="reset" to="cftld/reset" />
+    <remap from="track" to="cftld/track" />
+    <remap from="debug_image" to="cftld/debug_image" />
+
+    <param name="tld_config_file" value="$(arg cftld_config_file)" />
+    <rosparam command="load" file="$(arg cftld_param_file)" />
+  </node>
+</launch>
