@@ -16,8 +16,8 @@
   </group>
 
   <!-- temp -->
-  <node name="republisher" type="republish" pkg="image_transport"
-    args="compressed in:=bebop/image_raw raw out:=bebop/image_raw" output="$(arg output)" />
+  <!--node name="republisher" type="republish" pkg="image_transport"
+    args="compressed in:=bebop/image_raw raw out:=bebop/image_raw" output="$(arg output)" /-->
 
   <node pkg="nodelet" type="nodelet" name="cftld_nodelet"
     args="load cftld_ros/CFtldRosNodelet $(arg nodelet_manager)" output="$(arg output)">
