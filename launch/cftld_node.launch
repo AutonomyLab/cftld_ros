@@ -16,7 +16,7 @@
     <remap from="init_roi" to="cftld/init_roi" />
     <remap from="reset" to="cftld/reset" />
     <remap from="track" to="cftld/track" />
-    <remap from="debug_image" to="cftld/debug_image" />
+    <remap from="debug_image" to="cftld/debug_image_raw" />
 
     <param name="tld_config_file" value="$(arg cftld_config_file)" />
     <rosparam command="load" file="$(arg cftld_param_file)" />
