@@ -234,17 +234,17 @@ void CFtldRosNodelet::ImageCallback(const sensor_msgs::ImageConstPtr &img_msg_pt
 
     if (tracking_state_ == TRACKING_STATE_UNINITED)
     {
-      NODELET_INFO_THROTTLE(1, "[CFTLD] The tracker has not yet been initialized.");
+      NODELET_INFO_THROTTLE(10, "[CFTLD] The tracker has not yet been initialized.");
       track_msg_ptr->status = cftld_ros::Track::STATUS_UNKNOWN;
     }
     else
     {
-      NODELET_INFO_STREAM_THROTTLE(1, "TLD Tracking Valid: " << tld_ptr_->isTrackerValid);
-      NODELET_INFO_STREAM_THROTTLE(1, "TLD Tracking Confidence: " << tld_ptr_->currConf);
-      NODELET_INFO_STREAM_THROTTLE(1, "TLD Tracking Enabled: " << tld_ptr_->trackerEnabled);
-      NODELET_INFO_STREAM_THROTTLE(1, "TLD Learning Enabled: " << tld_ptr_->learningEnabled);
-      NODELET_INFO_STREAM_THROTTLE(1, "TLD Detection Enabled: " << tld_ptr_->detectorEnabled);
-      NODELET_INFO_STREAM_THROTTLE(1, "TLD Valid BB: " << (tld_ptr_->currBB != NULL));
+      NODELET_DEBUG_STREAM("TLD Tracking Valid: " << tld_ptr_->isTrackerValid);
+      NODELET_DEBUG_STREAM("TLD Tracking Confidence: " << tld_ptr_->currConf);
+      NODELET_DEBUG_STREAM("TLD Tracking Enabled: " << tld_ptr_->trackerEnabled);
+      NODELET_DEBUG_STREAM("TLD Learning Enabled: " << tld_ptr_->learningEnabled);
+      NODELET_DEBUG_STREAM("TLD Detection Enabled: " << tld_ptr_->detectorEnabled);
+      NODELET_DEBUG_STREAM("TLD Valid BB: " << (tld_ptr_->currBB != NULL));
 
       tld_ptr_->processImage(frame_input_);
       TICK("[CFTLD] TLD processImage");
