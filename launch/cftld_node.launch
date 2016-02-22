@@ -11,7 +11,7 @@
   <!--node name="republisher" type="republish" pkg="image_transport"
     args="compressed in:=bebop/image_raw raw out:=bebop/image_raw" output="$(arg output)" /-->
 
-  <node pkg="cftld_ros" type="cftld_ros_node" name="cftld_ros" output="$(arg output)">
+  <node pkg="cftld_ros" type="cftld_ros_node" name="cftld_ros" output="$(arg output)" respawn="true">
     <remap from="image_raw" to="bebop/image_raw" />
     <remap from="init_roi" to="cftld/init_roi" />
     <remap from="reset" to="cftld/reset" />

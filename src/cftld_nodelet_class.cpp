@@ -32,9 +32,9 @@ CFtldRosNodelet::CFtldRosNodelet()
 
 void CFtldRosNodelet::UpdateParams()
 {
-   GetParam<bool>(private_nh_, "enable_debug_image", enable_debug_image_, false);
-   GetParam<std::string>(private_nh_, "tld_config_file", param_tld_cfgfile_, std::string(""));
-   GetParam<double>(private_nh_, "downsample_factor", param_downsample_factor_, 1.0);
+   util::GetParam<bool>(private_nh_, "enable_debug_image", enable_debug_image_, false);
+   util::GetParam<std::string>(private_nh_, "tld_config_file", param_tld_cfgfile_, std::string(""));
+   util::GetParam<double>(private_nh_, "downsample_factor", param_downsample_factor_, 1.0);
 }
 
 bool CFtldRosNodelet::InitCFtld(const std::string &cfg_file_path)
@@ -92,12 +92,12 @@ bool CFtldRosNodelet::InitCFtld(const std::string &cfg_file_path)
   }
 
   // Initialize TLD
-  SetTLDParam("tld.trackerEnabled", tld_ptr_->trackerEnabled, tld_settings_.m_trackerEnabled);
-  SetTLDParam("tld.detectorEnabled", tld_ptr_->detectorEnabled, tld_settings_.m_detectorEnabled);
+  util::SetTLDParam("tld.trackerEnabled", tld_ptr_->trackerEnabled, tld_settings_.m_trackerEnabled);
+  util::SetTLDParam("tld.detectorEnabled", tld_ptr_->detectorEnabled, tld_settings_.m_detectorEnabled);
   tld_ptr_->init(tld_settings_.m_useDsstTracker);
-  SetTLDParam("tld.alternating", tld_ptr_->alternating, tld_settings_.m_alternating);
-  SetTLDParam("tld.learningEnabled", tld_ptr_->learningEnabled, tld_settings_.m_learningEnabled);
-  SetTLDParam("tld.seed", tld_ptr_->seed, tld_settings_.m_seed);
+  util::SetTLDParam("tld.alternating", tld_ptr_->alternating, tld_settings_.m_alternating);
+  util::SetTLDParam("tld.learningEnabled", tld_ptr_->learningEnabled, tld_settings_.m_learningEnabled);
+  util::SetTLDParam("tld.seed", tld_ptr_->seed, tld_settings_.m_seed);
 
 //  main->showOutput = m_settings.m_showOutput;
 //  main->showTrajectory = (m_settings.m_trajectory) ? true : false;
@@ -114,20 +114,20 @@ bool CFtldRosNodelet::InitCFtld(const std::string &cfg_file_path)
   tld::DetectorCascade *detectorCascade = tld_ptr_->detectorCascade;
   ROS_ASSERT(detectorCascade);
 
-  SetTLDParam("tld.detectorCascade.varianceFilter.enabled", detectorCascade->varianceFilter->enabled, tld_settings_.m_varianceFilterEnabled);
-  SetTLDParam("tld.detectorCascade.ensembleClassifier.enabled", detectorCascade->ensembleClassifier->enabled, tld_settings_.m_ensembleClassifierEnabled);
-  SetTLDParam("tld.detectorCascade.nnClassifier.enabled", detectorCascade->nnClassifier->enabled, tld_settings_.m_nnClassifierEnabled);
-  SetTLDParam("tld.detectorCascade.nnClassifier.thetaTP", detectorCascade->nnClassifier->thetaTP, tld_settings_.m_thetaP);
-  SetTLDParam("tld.detectorCascade.nnClassifier.thetaFP", detectorCascade->nnClassifier->thetaFP, tld_settings_.m_thetaN);
+  util::SetTLDParam("tld.detectorCascade.varianceFilter.enabled", detectorCascade->varianceFilter->enabled, tld_settings_.m_varianceFilterEnabled);
+  util::SetTLDParam("tld.detectorCascade.ensembleClassifier.enabled", detectorCascade->ensembleClassifier->enabled, tld_settings_.m_ensembleClassifierEnabled);
+  util::SetTLDParam("tld.detectorCascade.nnClassifier.enabled", detectorCascade->nnClassifier->enabled, tld_settings_.m_nnClassifierEnabled);
+  util::SetTLDParam("tld.detectorCascade.nnClassifier.thetaTP", detectorCascade->nnClassifier->thetaTP, tld_settings_.m_thetaP);
+  util::SetTLDParam("tld.detectorCascade.nnClassifier.thetaFP", detectorCascade->nnClassifier->thetaFP, tld_settings_.m_thetaN);
 
   // classifier
-  SetTLDParam("tld.detectorCascade.useShift", detectorCascade->useShift, tld_settings_.m_useProportionalShift);
-  SetTLDParam("tld.detectorCascade.shift", detectorCascade->shift, tld_settings_.m_proportionalShift);
-  SetTLDParam("tld.detectorCascade.minScale", detectorCascade->minScale, tld_settings_.m_minScale);
-  SetTLDParam("tld.detectorCascade.maxScale", detectorCascade->maxScale, tld_settings_.m_maxScale);
-  SetTLDParam("tld.detectorCascade.minSize", detectorCascade->minSize, tld_settings_.m_minSize);
-  SetTLDParam("tld.detectorCascade.numTrees", detectorCascade->numTrees, tld_settings_.m_numTrees);
-  SetTLDParam("tld.detectorCascade.numFeatures", detectorCascade->numFeatures, tld_settings_.m_numFeatures);
+  util::SetTLDParam("tld.detectorCascade.useShift", detectorCascade->useShift, tld_settings_.m_useProportionalShift);
+  util::SetTLDParam("tld.detectorCascade.shift", detectorCascade->shift, tld_settings_.m_proportionalShift);
+  util::SetTLDParam("tld.detectorCascade.minScale", detectorCascade->minScale, tld_settings_.m_minScale);
+  util::SetTLDParam("tld.detectorCascade.maxScale", detectorCascade->maxScale, tld_settings_.m_maxScale);
+  util::SetTLDParam("tld.detectorCascade.minSize", detectorCascade->minSize, tld_settings_.m_minSize);
+  util::SetTLDParam("tld.detectorCascade.numTrees", detectorCascade->numTrees, tld_settings_.m_numTrees);
+  util::SetTLDParam("tld.detectorCascade.numFeatures", detectorCascade->numFeatures, tld_settings_.m_numFeatures);
 
   return true;
 }
@@ -169,6 +169,9 @@ void CFtldRosNodelet::InitROICallback(const sensor_msgs::RegionOfInterestConstPt
   // Bad API design of TLD
   cv::Rect bb(roi_msg_ptr->x_offset, roi_msg_ptr->y_offset,
               roi_msg_ptr->width, roi_msg_ptr->height);
+
+
+  util::ClampRect(bb, cv::Rect(0, 0, frame_input_.cols, frame_input_.rows));
 
   if (bb.area() < 10)
   {
@@ -232,6 +235,7 @@ void CFtldRosNodelet::ImageCallback(const sensor_msgs::ImageConstPtr &img_msg_pt
     track_msg_ptr->uid = 0;
     track_msg_ptr->confidence = 0.0f;
 
+    cv::Rect bb(0, 0, 0, 0);
     if (tracking_state_ == TRACKING_STATE_UNINITED)
     {
       NODELET_INFO_THROTTLE(10, "[CFTLD] The tracker has not yet been initialized.");
@@ -248,10 +252,13 @@ void CFtldRosNodelet::ImageCallback(const sensor_msgs::ImageConstPtr &img_msg_pt
 
       tld_ptr_->processImage(frame_input_);
       TICK("[CFTLD] TLD processImage");
+
       if (tld_ptr_->currBB && tld_ptr_->isTrackerValid)
       {
+        // TODO: Move the boundary rect to the class, init it once
+        bb = util::ClampRect(*(tld_ptr_->currBB), cv::Rect(0, 0, frame_input_.cols - 1, frame_input_.rows - 1));
+
         track_msg_ptr->status = cftld_ros::Track::STATUS_TRACKING;
-        const cv::Rect& bb = *(tld_ptr_->currBB);
         track_msg_ptr->roi.x_offset = bb.x;
         track_msg_ptr->roi.y_offset = bb.y;
         track_msg_ptr->roi.width = bb.width;
@@ -277,7 +284,7 @@ void CFtldRosNodelet::ImageCallback(const sensor_msgs::ImageConstPtr &img_msg_pt
       if (tld_ptr_ && tld_ptr_->currBB)
       {
         //cv::rectangle(frame_debug_, *(tld_ptr_->currBB), CV_RGB(100, 0, 0), 2);
-        cv::rectangle(frame_debug_, *(tld_ptr_->currBB), CV_RGB(100, 0, 0), 2);
+        cv::rectangle(frame_debug_, bb, CV_RGB(100, 0, 0), 2);
       }
       else
       {

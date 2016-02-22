@@ -69,6 +69,8 @@ ExternalProject_Add(CFtld
   #GIT_REPOSITORY https://github.com/AutonomyLab/CFtld.git
   #GIT_TAG master
   URL https://github.com/AutonomyLab/CFtld/archive/master.zip
+  #GIT_REPOSITORY /home/autolab/Dev/bebop_ws/external-src/CFtld
+  #GIT_TAG dev
   PREFIX ${CATKIN_DEVEL_PREFIX}
   CMAKE_ARGS
     -DWITH_TESTS=0
@@ -82,6 +84,7 @@ ExternalProject_Add(CFtld
 )
 
 set(CFTLD_PATH "${CATKIN_DEVEL_PREFIX}/src/CFtld")
+#set(CFTLD_PATH "/home/autolab/Dev/bebop_ws/external-src/CFtld")
 
 # The underlying source dependency (CFtld) is badly packaged
 # and does not provide an easy way to be used as a library.
@@ -134,6 +137,12 @@ add_executable(cftld_ros_node src/cftld_ros_node.cpp)
 add_dependencies(cftld_ros_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(cftld_ros_node
+  ${catkin_LIBRARIES}
+)
+
+add_executable(fake_tracker_node src/fake_tracker.cpp)
+add_dependencies(fake_tracker_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(fake_tracker_node
   ${catkin_LIBRARIES}
 )
 

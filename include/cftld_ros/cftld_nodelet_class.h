@@ -39,6 +39,9 @@ enum tracking_state_t
 };
 
 
+namespace  util
+{
+
 // The nodelet version of ROS_* macros complains about getName() not available
 template<class T>
 static void GetParam(const ros::NodeHandle& nh,
@@ -54,6 +57,31 @@ static void SetTLDParam(const std::string& caption, T& lhs, const T& rhs)
   ROS_INFO_STREAM("[CFTLD] Setting " << caption << " : " << rhs);
   lhs = rhs;
 }
+
+template <typename T> inline T clamp (T x, T a, T b)
+{
+    return ((x) > (a) ? ((x) < (b) ? (x) : (b)) : (a));
+}
+
+template <typename T> inline T mapValue(T x, T a, T b, T c, T d)
+{
+    x = clamp(x, a, b);
+    return c + (d - c) * (x - a) / (b - a);
+}
+
+template<class T>
+inline cv::Rect_<T> ClampRect(const cv::Rect_<T>& rect, const cv::Rect_<T>& boundery) {
+  cv::Rect_<T> res = rect;
+  res.x = clamp(rect.x, boundery.tl().x, boundery.br().x);
+  res.y = clamp(rect.y, boundery.tl().y, boundery.br().y);
+  T x2 = clamp(rect.br().x, boundery.tl().x, boundery.br().x);
+  T y2 = clamp(rect.br().y, boundery.tl().y, boundery.br().y);
+  res.width = x2 - res.x;
+  res.height = y2 - res.y;
+  return res;
+}
+}  // namespace util
+
 
 class CFtldRosNodelet : public nodelet::Nodelet
 {
