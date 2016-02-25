@@ -40,7 +40,14 @@ public:
     {
       track_msg_.header.stamp = ros::Time::now();
       track_msg_.header.frame_id = "";
-      if ((ros::Time::now() - track_recv_time_).toSec() > 1.0)
+
+
+      const bool is_valid_roi = ((ros::Time::now() - track_recv_time_).toSec() < 1.0) &&
+          roi_ptr_ &&
+          (roi_ptr_->x_offset > 0) && (roi_ptr_->y_offset > 0) && (roi_ptr_->width > 5) && (roi_ptr_->height > 5) &&
+          (roi_ptr_->width < 640) && (roi_ptr_->height < 368);
+
+      if (!is_valid_roi)
       {
         track_msg_.uid = 1;
         track_msg_.status = cftld_ros::Track::STATUS_LOST;
