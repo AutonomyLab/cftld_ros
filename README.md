@@ -1,6 +1,6 @@
 ## Intro
 
-ROS wrapper for CFTld, a long-term visual tracker
+ROS wrapper for CFTld, a long-term visual tracker, Based on [CFTld tracker](https://github.com/klahaag/CFtld),
 
 ## Installation
 
