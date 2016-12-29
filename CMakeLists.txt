@@ -1,15 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(cftld_ros)
 
-# CMAKE_PREFIX_PATH has higher priority than $ENV{CMAKE_PREFIX_PATH}
-# catkin workspace's setup file sets the latter, so messing with
-# the former will break catkin
-
-set(CUSTOM_OPENCV_DIR "/home/autolab/opencv/opencv-3.1.0/install")
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
 
 find_package(catkin REQUIRED COMPONENTS
+  opencv3
   nodelet
   roscpp
   sensor_msgs
@@ -19,8 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
 )
 
-# Forcing the custom version of OpenCV
-find_package(OpenCV 3 REQUIRED PATHS ${CUSTOM_OPENCV_DIR} NO_DEFAULT_PATH)
+find_package(OpenCV 3 REQUIRED)
 message(STATUS "OpenCV Includes: ${OpenCV_INCLUDE_DIRS}")
 message(STATUS "OpenCV Libraries: ${OpenCV_LIBRARIES}")
 message(STATUS "OpenCV Libs: ${OpenCV_LIBS}")
@@ -56,7 +50,15 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES cftld_ros
-   CATKIN_DEPENDS sensor_msgs std_msgs message_runtime
+   CATKIN_DEPENDS
+    opencv3
+    nodelet
+    roscpp
+    sensor_msgs
+    std_msgs
+    message_generation
+    cv_bridge
+    image_transport
 #  DEPENDS system_lib
 )
 
@@ -74,7 +76,7 @@ ExternalProject_Add(CFtld
   PREFIX ${CATKIN_DEVEL_PREFIX}
   CMAKE_ARGS
     -DWITH_TESTS=0
-    -DCMAKE_PREFIX_PATH=${CUSTOM_OPENCV_DIR}
+    #-DCMAKE_PREFIX_PATH=${CUSTOM_OPENCV_DIR}
     -DCMAKE_BUILD_TYPE=RelWithDebInfo
     #-DEXTERNAL_DEVEL_SPACE=${CATKIN_DEVEL_PREFIX}
     -DCMAKE_INSTALL_PREFIX=${CATKIN_DEVEL_PREFIX}
