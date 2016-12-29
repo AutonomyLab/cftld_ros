@@ -4,6 +4,23 @@ ROS wrapper for CFTld, a long-term visual tracker, Based on [CFTld tracker](http
 
 ## Installation
 
+Pre-requirements:
+
+- Ubuntu Xenial (16.04)
+- ROS Kinetic
+- OpenCV 3.x ([provided by ROS Kinetic](http://wiki.ros.org/opencv3?distro=kinetic))
+
+1. Clone this repository into your `<catkin_ws>/src` folder
+2. Install the required dependencies 
+
+    $ cd /path/to/catkin_ws
+    $ rosdep update
+    $ rosdep install --from-paths src -i
+
+3. Build the package using `catkin_make` (or `catkin build` if you are using [the new catkin](https://catkin-tools.readthedocs.io/en/latest/))
+
+## Usage
+
 TBA
 
 ## Misc
